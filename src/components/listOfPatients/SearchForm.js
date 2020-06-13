@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 
 import TextField from '@material-ui/core/TextField';
 
-import { updateSearchId } from './../../store/actions';
+import { updateSearchId, setPage } from './../../store/actions';
 
 class SearchForm extends Component {
   constructor(props) {
@@ -13,7 +12,7 @@ class SearchForm extends Component {
   }
 
   componentDidMount() {
-    this.inputID.focus()
+    this.inputID.focus();
   }
 
   render() {
@@ -30,26 +29,25 @@ class SearchForm extends Component {
             placeholder="enter patient ID"
             ref={input => this.inputID = input}
             onChange={event => {
-                const val = Number(event.target.value)
-                onChange(event.target.value && !Number.isNaN(val) ? val : null)
+                const val = Number(event.target.value);
+                onChange(event.target.value && !Number.isNaN(val) ? val : null);
             }}
           />
         </div> 
       </section>
     )
   }
-}
-
-SearchForm.propTypes = {
-  onChange: PropTypes.func.isRequired
-}
+};
 
 const mapStateToProps = state => ({
   searchId: state.searchId
-})
+});
 
 const mapDispatchToProps = dispatch => ({
-  onChange: searchId => dispatch(updateSearchId(searchId))
-})
+  onChange: searchId => {
+    dispatch(setPage(0));
+    dispatch(updateSearchId(searchId));
+  }
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchForm)
+export default connect(mapStateToProps, mapDispatchToProps)(SearchForm);

@@ -26,7 +26,7 @@ const open = (state = false, action) => {
     }
 }
 
-const patient = (state = init, action) => {
+const formPatient = (state = init, action) => {
     switch (action.type) {
         case 'updateFormPatient':
             return {
@@ -46,19 +46,19 @@ const patient = (state = init, action) => {
 
 const listPatients = [
     {
-        airStatus: "",
-        city: "San Francisco",
-        conditionId: 1,
+        id: 4,
         firstName: "John",
-        id: 0,
         lastName: "Abbot",
         mobilePhone: "987123454",
-        postalCode: "45732",
+        city: "San Francisco",
+        streetAddress: "1324 Fider",
         state: "California",
-        streetAddress: "1324 Fider"
+        postalCode: "45732",
+        conditionId: 1,
+        airStatus: ''
     },
     {
-        id: 1,
+        id: 3,
         firstName: 'Anna',
         lastName: 'Silver',
         mobilePhone: '514 123 3455',
@@ -82,7 +82,7 @@ const listPatients = [
         airStatus: ''
     },
     {
-        id: 3,
+        id: 1,
         firstName: 'Rita',
         lastName: 'Miller',
         mobilePhone: '514 173 2345',
@@ -94,7 +94,7 @@ const listPatients = [
         airStatus: ''
     },
     {
-        id: 4,
+        id: 0,
         firstName: 'Mark',
         lastName: 'Avrelij',
         mobilePhone: '514 103 2945',
@@ -111,21 +111,40 @@ const patients = (state = listPatients, action) => {
     switch (action.type) {
         case 'newPatient':
             // ID generation
-            action.patient.id = state.length;
-            // console.log("patients", state);
+            action.patient.id = state.length ? state[0].id + 1 : 0;
             return [
-                ...state,
-                action.patient
+                action.patient,
+                ...state
+            ]
+
+        case 'setAirStatus':
+            const i = state.findIndex(p => p.id === action.id);
+            const patient = state[i];
+
+            return [
+                ...state.slice(0, i), {
+                    ...patient,
+                    airStatus: action.value
+                },
+                ...state.slice(i + 1, state.length),
             ]
 
         case 'editPatient':
-            const i = state.findIndex(p => p.id === action.patient.id);
+            const j = state.findIndex(p => p.id === action.patient.id);
             return [
-                ...state.slice(0, i),
+                ...state.slice(0, j),
                 action.patient,
-                ...state.slice(i + 1, state.length)
+                ...state.slice(j + 1, state.length)
             ]
-  
+        
+        case 'deletePatient':
+            const k = state.findIndex(p => p.id === action.id);
+            
+            return [
+                ...state.slice(0, k),
+                ...state.slice(k + 1, state.length)
+            ]    
+
         default:
             return state
     }
@@ -134,7 +153,6 @@ const patients = (state = listPatients, action) => {
 const searchId = (state = null, action) => {
     switch (action.type) {
         case 'updateSearchId':
-            console.log('action.searchId ::::   = = == ' + action.searchId)
             return action.searchId
 
         default:
@@ -166,10 +184,21 @@ const conditions = (state = [
     }
 }
 
+const page = (state = 0, action) => {
+    switch (action.type) {
+        case 'setPage':
+            return action.page
+
+        default:
+            return state
+    }
+}
+
 export default combineReducers({
     open,
-    patient,
+    formPatient,
     patients,
     searchId,
-    conditions
+    conditions,
+    page
 })
