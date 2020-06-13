@@ -1,43 +1,55 @@
 import React, { Component } from 'react';
-import TextField from '@material-ui/core/TextField';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+
+import TextField from '@material-ui/core/TextField';
+
+import { updateSearchId } from './../../store/actions';
 
 class SearchForm extends Component {
   constructor(props) {
-    super()
+    super(props)
     this.inputID = null
-  }
-
-  static propTypes = {
-    onChange: PropTypes.func.isRequired,
   }
 
   componentDidMount() {
     this.inputID.focus()
   }
 
-  onChange(e) {
-    this.props.onChange(e.target.value)
-  }
-
   render() {
+    const { searchId, onChange } = this.props;
+
     return (
       <section className="SearchForm">
         <div className="row" style={{display: "flex", justifyContent: "center", textAlign: "center", paddingTop: "50px", paddingBottom: "15px"}}>
          <span style={{lineHeight: "2.1876em", paddingRight: "20px"}}>Get patient by ID</span>
           <TextField
             name="name"
+            value={searchId === null ? '' : searchId}
             autoComplete="off"
             placeholder="enter patient ID"
             ref={input => this.inputID = input}
-            onChange={this.onChange.bind(this)}
+            onChange={event => {
+                const val = Number(event.target.value)
+                onChange(event.target.value && !Number.isNaN(val) ? val : null)
+            }}
           />
         </div> 
       </section>
     )
-
   }
-
 }
 
-export default SearchForm
+SearchForm.propTypes = {
+  onChange: PropTypes.func.isRequired
+}
+
+const mapStateToProps = state => ({
+  searchId: state.searchId
+})
+
+const mapDispatchToProps = dispatch => ({
+  onChange: searchId => dispatch(updateSearchId(searchId))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(SearchForm)

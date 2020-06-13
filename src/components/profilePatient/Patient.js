@@ -1,14 +1,17 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
-// import Paper from '@material-ui/core/Paper';
-// import { Link } from 'react-router-dom'
 
-function Patient(props) {
-    const {id, firstName, lastName, mobilePhone, city, streetAddress, state, postalCode, conditions, airStatus} = props.row;
-    console.log("ROW", props);
+import { } from './../../store/actions'
 
-  return (
+
+const Patient = ({ patient, conditions, onClickUpdate }) => {
+    const { id, firstName, lastName, mobilePhone, city, streetAddress, conditionId, state, postalCode, airStatus } = patient;
+    const condition = conditions.find(c => c.id === conditionId)
+
+    return (
         <TableRow key={id} className="Patient">
             <TableCell component="th" scope="row">
                 {id}
@@ -20,13 +23,19 @@ function Patient(props) {
             <TableCell align="left">{streetAddress}</TableCell>
             <TableCell align="left">{state}</TableCell>
             <TableCell align="left">{postalCode}</TableCell>
-            <TableCell align="left">{conditions.id} {conditions.name}
-            </TableCell>
+            <TableCell align="left">{condition.id} {condition.name}</TableCell>
             <TableCell align="left">{airStatus}</TableCell>
             <TableCell align="left">icons</TableCell>
         </TableRow>
     )
-
 }
 
-export default Patient
+const mapStateToProps = state => ({
+    conditions: state.conditions
+})
+
+const mapDispatchToProps = dispatch => ({
+
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Patient)

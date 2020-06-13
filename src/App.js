@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { Provider } from 'react-redux'
+import store from './store'
+
 import logo from './logo.svg';
 import './App.css';
 import theme from "./theme";
@@ -8,6 +11,7 @@ import TablePatients from './components/listOfPatients/TablePatients';
 // import { BrowserRouter as Router, Route } from 'react-router-dom';
 // import { Link } from 'react-router-dom';
 import AddPatient from './components/addForm/AddPatient';
+
 
 class App extends Component {
   constructor(props) {
@@ -24,12 +28,14 @@ class App extends Component {
 
   render() {
     return (
-      <ThemeProvider theme={theme}>
-        <section className="App">
-          <TablePatients></TablePatients>
-          <AddPatient></AddPatient>
-        </section>
-      </ThemeProvider>
+      <Provider store={store}>
+        <ThemeProvider theme={theme}>
+          <section className="App">
+            <TablePatients></TablePatients>
+            <AddPatient></AddPatient>
+          </section>
+        </ThemeProvider>
+      </Provider>
     );
   }
 }
